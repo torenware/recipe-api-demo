@@ -1,4 +1,4 @@
-FROM python:3.8-alpine
+FROM python:3.6-alpine
 LABEL maintainer="rob@torenware.com (Rob Thorne)"
 
 # Recommended for using python docker images:
