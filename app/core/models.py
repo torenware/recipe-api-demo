@@ -9,7 +9,7 @@ class UserManager(BaseUserManager):
         """Create and save a new user"""
         user = self.model(email, **extra_fields)
         user.set_password(password)
-        user.save(using=self.db)
+        user.save(using=self._db)
 
         return user
 
