@@ -66,7 +66,7 @@ class PublicUserAPITests(TestCase):
         payload = {
             'email': 'killroy@washere.org',
             'password': 'long-enough',
-            'name': 'Killroy',
+            # 'name': 'Killroy',
         }
 
         # User needs to exist for this test, so create it:
@@ -75,7 +75,7 @@ class PublicUserAPITests(TestCase):
         res = self.client.post(TOKEN_URL, payload)
 
         self.assertIn('token', res.data)
-        self.asssertEqual(res.status_code, status.HTTP_200_OK)
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
 
     def test_req_token_invalid_credential(self):
         """Test to insure a bad credential yields no token"""
