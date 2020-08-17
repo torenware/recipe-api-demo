@@ -6,7 +6,9 @@ from core.models import Tag
 from recipe.serializers import TagSerializer
 
 
-class TagViewSet(viewsets.GenericViewSet, mixins.ListModelMixin):
+class TagViewSet(viewsets.GenericViewSet,
+                 mixins.ListModelMixin,
+                 mixins.CreateModelMixin):
     """Create a new user in the system"""
     serializer_class = TagSerializer
     authentication_classes = (
@@ -20,3 +22,7 @@ class TagViewSet(viewsets.GenericViewSet, mixins.ListModelMixin):
     def get_queryset(self):
         """Limit qs to user's own tags"""
         return self.queryset.filter(user=self.request.user).order_by('-name')
+
+    def perform_create(self, serializer):
+        """Override to make sure a new tag belongs to its user"""
+        serializer.save(user=self.request.user)

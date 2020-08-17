@@ -70,3 +70,24 @@ class PrivateUserApiTests(TestCase):
         self.assertEqual(resp.status_code, status.HTTP_200_OK)
         self.assertEqual(len(resp.data), 1)
         self.assertEqual(resp.data[0]["name"], "Tapas")
+
+    def test_create_tag_success(self):
+        """Create a tag with valid input"""
+        payload = {
+            'name': 'Indian'
+        }
+        resp = self.client.post(TAGS_URL, payload)
+        self.assertEqual(resp.status_code, status.HTTP_201_CREATED)
+
+        created = Tag.objects.filter(
+            user=self.user,
+            name=payload['name']
+        ).exists()
+
+        self.assertTrue(created)
+
+    def test_create_tag_invalid(self):
+        """Creation of tag should fail if input is invalid"""
+        payload = {'name': ''}
+        resp = self.client.post(TAGS_URL, payload)
+        self.assertEqual(resp.status_code, status.HTTP_400_BAD_REQUEST)
