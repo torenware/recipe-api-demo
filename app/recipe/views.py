@@ -53,9 +53,26 @@ class RecipeViewSet(viewsets.ModelViewSet):
     serializer_class = RecipeSerializer
     queryset = Recipe.objects.all()
 
+    def _params_to_ints(self, qs):
+        """Turn a comma delimited list of ints into a list of int"""
+        return [int(str_id) for str_id in qs.split(',')]
+
     def get_queryset(self):
         """Get the authenticated user's recipes"""
-        return self.queryset.filter(user=self.request.user)
+        tags = self.request.query_params.get('tags')
+        ingredients = self.request.query_params.get('ingredients')
+        queryset = self.queryset
+
+        if tags:
+            tag_ids = self._params_to_ints(tags)
+            # Magic string indicates a filter on a foreign id link:
+            queryset = queryset.filter(tags__id__in=tag_ids)
+
+        if ingredients:
+            ingred_ids = self._params_to_ints(ingredients)
+            queryset = queryset.filter(ingredients__id__in=ingred_ids)
+
+        return queryset.filter(user=self.request.user)
 
     def get_serializer_class(self):
         """Return different serializer for our detail view"""
